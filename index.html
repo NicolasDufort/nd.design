@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lead Product Designer | 10+ Years Experience</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
@@ -460,9 +461,22 @@
             </div>
 
             <!-- Visual Lead -->
-            <div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">
+            <!--<div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">
                 <span class="text-sm font-mono opacity-40 uppercase tracking-[0.4em]">[ HERO_IMAGE: PHYSICAL_DIGITAL_WORKSPACE_TWIN ]</span>
-            </div>
+            </div>-->
+
+            <section class="section-3d">
+                <model-viewer 
+                    src="retro_office_desk.glb" 
+                    alt="Visualisation 3D"
+                    auto-rotate 
+                    rotation-speed="20%"
+                    camera-controls 
+                    touch-action="pan-y"
+                    ar
+                    shadow-intensity="1">
+                </model-viewer>
+            </section>
 
             <div class="grid lg:grid-cols-3 gap-24 mt-20">
                 <div class="lg:col-span-2 space-y-24">
