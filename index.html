@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Product Designer | 10+ Years Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0076FF;
+            --bg: #050505;
+            --surface: #111111;
+            --surface-hover: #1a1a1a;
+            --text: #F9FAFB;
+            --text-muted: #9CA3AF;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.03);
+            --card-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            --placeholder: #1a1a1a;
+        }
+
+        body.light-mode {
+            --bg: #F3F4F6;
+            --surface: #FFFFFF;
+            --surface-hover: #F9FAFB;
+            --text: #111827;
+            --text-muted: #4B5563;
+            --border: rgba(0, 0, 0, 0.1);
+            --glass: rgba(0, 0, 0, 0.02);
+            --card-shadow: 0 10px 30px -10px rgba(0, 118, 255, 0.1);
+            --placeholder: #e5e7eb;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        h1, h2, h3, h4, h5, .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Interactive Particle Background */
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: var(--primary);
+            background: var(--surface-hover);
+        }
+
+        .img-placeholder {
+            background-color: var(--placeholder);
+            border: 2px dashed var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-family: monospace;
+            font-size: 0.75rem;
+            border-radius: 1.5rem;
+            min-height: 300px;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: var(--surface);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            font-weight: 700;
+        }
+
+        .page-view {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sticky-header {
+            background: var(--bg);
+            opacity: 0.98;
+            backdrop-filter: blur(12px);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -9px;
+            top: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 3px solid var(--primary);
+            z-index: 1;
+        }
+
+        .theme-toggle-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Interactive Background Canvas -->
+    <canvas id="background-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center sticky-header border-b border-[var(--border)]">
+        <div onclick="showPage('home')" class="text-xl font-bold tracking-tighter cursor-pointer">LP.DESIGN<span class="text-blue-500">.</span></div>
+        <div class="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest text-[var(--text-muted)]">
+            <a href="javascript:void(0)" onclick="showPage('home')" class="hover:text-[var(--primary)] transition">Work</a>
+            <a href="javascript:void(0)" onclick="showPage('resume')" class="hover:text-[var(--primary)] transition">Resume</a>
+            <a href="javascript:void(0)" onclick="showPage('philosophy')" class="hover:text-[var(--primary)] transition">Philosophy</a>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <svg id="sun-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                <svg id="moon-icon" class="hidden w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+            <a href="mailto:contact@example.com" class="px-5 py-2 bg-[var(--text)] text-[var(--bg)] text-xs font-bold rounded-full hover:bg-[var(--primary)] hover:text-white transition uppercase">Contact</a>
+        </div>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page-view active">
+        <header class="relative min-h-[75vh] flex flex-col justify-center px-6 md:px-24 pt-20">
+            <div class="max-w-4xl z-10">
+                <p class="text-blue-500 font-bold tracking-widest uppercase text-xs mb-4">Lead Product Designer • 10+ Years Experience</p>
+                <h1 class="text-5xl md:text-9xl font-extrabold mb-6 leading-none text-[var(--text)] tracking-tighter">
+                    Industrial <span class="gradient-text">Ecosystems.</span>
+                </h1>
+                <p class="text-xl md:text-3xl text-[var(--text-muted)] max-w-3xl leading-relaxed font-light">
+                    Designing the future of heavy industry. From 24h operational hubs to trillions of data points managed by AI.
+                </p>
+            </div>
+        </header>
+
+        <section class="px-6 md:px-24 pb-12 grid md:grid-cols-2 gap-12">
+            <!-- Project 1 -->
+            <div onclick="showPage('detail-control')" class="glass-card p-10 rounded-[2.5rem] cursor-pointer group border-l-4 border-l-blue-500">
+                <span class="tag mb-4 inline-block">Physical-Digital UX</span>
+                <h3 class="text-4xl font-bold mb-4 group-hover:text-blue-400 transition text-[var(--text)] tracking-tight text-[var(--text)]">Smart Ops Control Center</h3>
+                <p class="text-[var(--text-muted)] text-lg mb-8 leading-relaxed">Redesigning the workspace and interface for 24h industrial pilots. Reduced alert response time to 2h.</p>
+                <div class="flex justify-between items-end">
+                    <div class="text-blue-500 font-bold text-2xl font-mono">1 Week → 2 Hours</div>
+                    <span class="text-xs font-bold underline text-[var(--text)] tracking-widest uppercase">Explore Case</span>
+                </div>
+            </div>
+
+            <!-- Project 2 -->
+            <div onclick="showPage('detail-data')" class="glass-card p-10 rounded-[2.5rem] cursor-pointer group">
+                <span class="tag mb-4 inline-block">Big Data & AI</span>
+                <h3 class="text-4xl font-bold mb-4 group-hover:text-blue-400 transition text-[var(--text)] tracking-tight text-[var(--text)]">Group Data Suite</h3>
+                <p class="text-[var(--text-muted)] text-lg mb-8 leading-relaxed">A marketplace for internal datasets and AI-driven initiatives, optimizing maintenance worldwide.</p>
+                <div class="flex justify-between items-end">
+                    <div class="text-blue-500 font-bold text-2xl font-mono">AI AGENTS</div>
+                    <span class="text-xs font-bold underline text-[var(--text)] tracking-widest uppercase">Explore Case</span>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div onclick="showPage('detail-b2b')" class="glass-card p-10 rounded-[2.5rem] cursor-pointer group">
+                <span class="tag mb-4 inline-block">Scalability & Governance</span>
+                <h3 class="text-4xl font-bold mb-4 group-hover:text-blue-400 transition text-[var(--text)] tracking-tight text-[var(--text)]">Unified B2B Platform</h3>
+                <p class="text-[var(--text-muted)] text-lg mb-8 leading-relaxed">Harmonizing fragmented global websites into one high-conversion portal for 50+ countries.</p>
+                <div class="flex justify-between items-end">
+                    <div class="text-blue-500 font-bold text-2xl font-mono">+12% RETENTION</div>
+                    <span class="text-xs font-bold underline text-[var(--text)] tracking-widest uppercase">Explore Case</span>
+                </div>
+            </div>
+
+            <!-- Project 4 -->
+            <div onclick="showPage('detail-alto')" class="glass-card p-10 rounded-[2.5rem] cursor-pointer group">
+                <span class="tag mb-4 inline-block">Legacy Transformation</span>
+                <h3 class="text-4xl font-bold mb-4 group-hover:text-blue-400 transition text-[var(--text)] tracking-tight text-[var(--text)]">Project Alto</h3>
+                <p class="text-[var(--text-muted)] text-lg mb-8 leading-relaxed">Modern monitoring UI on top of a foundational legacy C-product for real-time logistics.</p>
+                <div class="flex justify-between items-end">
+                    <div class="text-blue-500 font-bold text-2xl font-mono">C MODERNIZATION</div>
+                    <span class="text-xs font-bold underline text-[var(--text)] tracking-widest uppercase">Explore Case</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- New CTA Section -->
+        <section class="px-6 md:px-24 pb-32">
+            <div class="glass-card p-12 md:p-20 rounded-[3rem] text-center relative overflow-hidden group">
+                <!-- Abstract visual accent -->
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700"></div>
+                
+                <div class="relative z-10 max-w-3xl mx-auto">
+                    <h2 class="text-4xl md:text-6xl font-bold mb-8 tracking-tighter text-[var(--text)] leading-tight">
+                        This is just the <span class="text-blue-500">tip of the iceberg.</span>
+                    </h2>
+                    <p class="text-xl md:text-2xl text-[var(--text-muted)] font-light leading-relaxed mb-12">
+                        A decade of industrial design involves hundreds of sensitive systems, internal platforms, and strategic explorations. If you're looking for a Lead Designer to tackle <span class="text-[var(--text)] font-medium italic">extreme complexity</span>, I’d love to show you more.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <a href="mailto:contact@example.com" class="px-10 py-5 bg-[var(--text)] text-[var(--bg)] font-bold rounded-full hover:bg-blue-500 hover:text-white transition-all transform hover:scale-105 uppercase tracking-widest text-sm">
+                            Get in touch
+                        </a>
+                        <span class="text-[var(--text-muted)] font-mono text-sm uppercase tracking-widest">Confidential cases available on request</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- RESUME PAGE (FULL DEPTH) -->
+    <div id="page-resume" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <div class="max-w-6xl mx-auto">
+            <header class="mb-24 border-b border-[var(--border)] pb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+                <div class="max-w-3xl">
+                    <h1 class="text-7xl md:text-8xl font-bold mb-6 text-[var(--text)] tracking-tighter">Tenure.</h1>
+                    <p class="text-blue-500 font-mono tracking-[0.2em] uppercase text-sm mb-4">Lead Product Designer • Air Liquide Group</p>
+                    <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">A decade of steering design culture and architecting complex systems for a global industrial leader.</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#" class="px-8 py-4 border border-[var(--border)] rounded-full hover:bg-[var(--text)] hover:text-[var(--bg)] transition text-sm font-bold uppercase tracking-widest">Download CV</a>
+                </div>
+            </header>
+
+            <div class="grid lg:grid-cols-12 gap-20">
+                <div class="lg:col-span-8 space-y-24">
+                    <!-- Professional Timeline -->
+                    <section>
+                        <h3 class="text-xs font-bold mb-12 uppercase tracking-[0.4em] text-blue-500 font-mono">Experience Journey</h3>
+                        <div class="relative border-l border-[var(--border)] pl-12 space-y-20">
+                            
+                            <div class="timeline-item relative">
+                                <span class="text-xs font-bold text-blue-500 mb-2 block font-mono uppercase">April 2014 — Present</span>
+                                <h4 class="text-4xl font-bold text-[var(--text)] mb-2 text-[var(--text)]">Air Liquide Group</h4>
+                                <p class="text-xl text-[var(--text-muted)] mb-8 font-medium italic text-[var(--text-muted)]">Lead Product Designer & International Technical Community Leader</p>
+                                
+                                <div class="space-y-12">
+                                    <div>
+                                        <h5 class="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4 font-mono">Strategy & Governance</h5>
+                                        <ul class="text-[var(--text-muted)] space-y-4 list-disc pl-5 leading-relaxed text-lg font-light text-[var(--text-muted)]">
+                                            <li><strong>Global Design System:</strong> Spearheaded the development and adoption of the Group's first unified design language, harmonizing UI/UX for Healthcare, Industrial Merchant, and New Energy.</li>
+                                            <li><strong>Digital Consolidation:</strong> Directed the strategy to merge 50+ regional legacy platforms into a singular, high-performance B2B marketplace.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4 font-mono">Industrial Innovation</h5>
+                                        <ul class="text-[var(--text-muted)] space-y-4 list-disc pl-5 leading-relaxed text-lg font-light text-[var(--text-muted)]">
+                                            <li><strong>Remote Ops Control Center:</strong> Conducted immersive ethnographic studies (3x8h shifts) leading to a total workspace and UI redesign. Reduced response times from 1 week to 2 hours.</li>
+                                            <li><strong>Data & AI Ecosystem:</strong> Currently lead design for the Data Suite, architecting "Actionable AI Agents" for predictive maintenance and budgetary factory forecasting.</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-blue-500 text-xs font-bold uppercase tracking-widest mb-4 font-mono">Leadership & Culture</h5>
+                                        <ul class="text-[var(--text-muted)] space-y-4 list-disc pl-5 leading-relaxed text-lg font-light text-[var(--text-muted)]">
+                                            <li><strong>Community Stewardship:</strong> Appointed International Technical Community Leader, driving design maturity across 50,000+ employees via global webinars and cross-functional alignment.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item relative">
+                                <span class="text-xs font-bold text-blue-500 mb-2 block font-mono uppercase">2020 — 2022 (Advisory)</span>
+                                <h4 class="text-4xl font-bold text-[var(--text)] mb-2 text-[var(--text)]">Sports Tech Startup</h4>
+                                <p class="text-xl text-[var(--text-muted)] mb-4 font-medium italic text-[var(--text-muted)]">Product Design Architect</p>
+                                <p class="text-lg text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">
+                                    Developed the end-to-end user experience for a high-performance athlete tracking ecosystem. Bridged hardware data with intuitive mobile visualizations for professional coaching.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section>
+                        <h3 class="text-xs font-bold mb-10 uppercase tracking-[0.4em] text-blue-500 font-mono">Education</h3>
+                        <div class="grid md:grid-cols-2 gap-8 font-light">
+                            <div class="glass-card p-10 rounded-[2rem]">
+                                <h4 class="text-xl font-bold text-[var(--text)] mb-2">Master's in Interaction Design</h4>
+                                <p class="text-sm text-[var(--text-muted)] font-mono uppercase tracking-wider text-[var(--text-muted)]">[University Placeholder]</p>
+                            </div>
+                            <div class="glass-card p-10 rounded-[2rem]">
+                                <h4 class="text-xl font-bold text-[var(--text)] mb-2">Certified Design Sprint Lead</h4>
+                                <p class="text-sm text-[var(--text-muted)] font-mono uppercase tracking-wider text-[var(--text-muted)]">AJ&Smart / Google Ventures</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column -->
+                <div class="lg:col-span-4 space-y-16">
+                    <section>
+                        <h3 class="text-xs font-bold mb-8 uppercase tracking-[0.3em] text-[var(--text-muted)] font-mono">Core Mastery</h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="tag">Systems Thinking</span>
+                            <span class="tag">Ethnography</span>
+                            <span class="tag">VR Prototyping</span>
+                            <span class="tag">3D Modeling</span>
+                            <span class="tag">AI Workflows</span>
+                            <span class="tag">PI Vision</span>
+                            <span class="tag">Design Governance</span>
+                            <span class="tag">B2B Strategy</span>
+                            <span class="tag">HTML/CSS/JS</span>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 class="text-xs font-bold mb-8 uppercase tracking-[0.3em] text-[var(--text-muted)] font-mono">Design Values</h3>
+                        <div class="space-y-10">
+                            <div>
+                                <h4 class="text-lg font-bold text-[var(--text)] mb-2 uppercase tracking-tight text-[var(--text)]">Impact over Ego</h4>
+                                <p class="text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">If the design doesn't move a business metric or protect a user, it's just decoration. I prioritize measurable transformation.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-[var(--text)] mb-2 uppercase tracking-tight text-[var(--text)]">Extreme Context</h4>
+                                <p class="text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">You cannot design for a factory floor from a studio in Paris. You must be in the shift, feeling the operational heat.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-[var(--text)] mb-2 uppercase tracking-tight text-[var(--text)]">Empowered Engineering</h4>
+                                <p class="text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">My job is to build the systems that make everyone else faster. A lead's output is as much a culture as it is a Figma file.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="p-10 border border-blue-500/30 rounded-[2.5rem] bg-blue-500/5 backdrop-blur-md">
+                        <h4 class="text-sm font-bold mb-6 uppercase text-blue-500 font-mono tracking-widest">Connect</h4>
+                        <a href="mailto:email@example.com" class="text-xl font-bold block mb-4 hover:text-blue-500 transition underline underline-offset-8 text-[var(--text)]">email@example.com</a>
+                        <p class="text-sm text-[var(--text-muted)] text-[var(--text-muted)]">Open for global opportunities.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PHILOSOPHY PAGE (FULL MANIFESTO) -->
+    <div id="page-philosophy" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <div class="max-w-4xl mx-auto">
+            <header class="mb-32 text-center md:text-left">
+                <h1 class="text-6xl md:text-9xl font-bold mb-10 text-[var(--text)] tracking-tighter">Industrial <span class="gradient-text italic">Humanism.</span></h1>
+                <p class="text-2xl md:text-4xl text-[var(--text-muted)] font-light leading-snug text-[var(--text-muted)]">
+                    I design for the <span class="text-[var(--text)] font-bold text-[var(--text)]">trillion-dollar stakes</span>. In high-risk environments, design isn't a luxury—it's a critical safety and efficiency layer.
+                </p>
+            </header>
+
+            <div class="space-y-40">
+                <!-- Translation Layer -->
+                <section class="grid md:grid-cols-2 gap-20 items-center">
+                    <div>
+                        <h3 class="text-4xl font-bold mb-8 text-[var(--text)] tracking-tight text-[var(--text)]">The Translation Layer</h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed mb-8 font-light text-[var(--text-muted)]">
+                            My role is to sit between the raw, brutalist reality of industrial data and the cognitive limits of the pilot. I build **translation layers** that turn legacy C-code or massive sensor arrays into intuitive action.
+                        </p>
+                        <div class="h-1 bg-blue-500 w-32"></div>
+                    </div>
+                    <div class="glass-card aspect-square rounded-full border-dashed border-blue-500 flex items-center justify-center p-16">
+                        <div class="text-center">
+                            <span class="text-5xl font-bold text-blue-500 mb-2 block">01</span>
+                            <span class="text-xs uppercase font-bold text-[var(--text-muted)] tracking-widest font-mono text-[var(--text-muted)]">Data to Intuition</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ecological UX -->
+                <section class="grid md:grid-cols-2 gap-20 items-center">
+                    <div class="order-2 md:order-1 glass-card p-16 rounded-[3rem]">
+                        <p class="text-lg italic text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">
+                            "A dashboard is a report. An AI agent is a colleague. We are moving from observing systems to collaborating with them. Designing that relationship requires trust architecture."
+                        </p>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <h3 class="text-4xl font-bold mb-8 text-[var(--text)] tracking-tight text-[var(--text)]">Beyond the Screen</h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed mb-6 font-light text-[var(--text-muted)]">
+                            I believe in **Ecological UX**. In the Smart Ops project, we didn't just fix the buttons; we fixed the office layout, the lighting, and the flow of people. I use **VR** as a standard part of my process to validate spatial performance.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Democratic Design -->
+                <section class="text-center max-w-3xl mx-auto border-t border-[var(--border)] pt-24 pb-12 text-[var(--text-muted)]">
+                    <h3 class="text-5xl font-bold mb-10 text-[var(--text)] italic tracking-tight text-[var(--text)]">Democratic Design</h3>
+                    <p class="text-2xl text-[var(--text-muted)] leading-relaxed mb-12 font-light text-[var(--text-muted)]">
+                        Design shouldn't be a bottleneck; it should be a baseline. My work is to build the **Design Systems and Handbooks** that empower engineers to make high-quality UX decisions autonomously.
+                    </p>
+                    <div class="flex justify-center flex-wrap gap-4">
+                        <div class="tag px-6 py-2">Global Scale</div>
+                        <div class="tag px-6 py-2">Autonomous Governance</div>
+                        <div class="tag px-6 py-2">Sustainable Design</div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL PAGE: CONTROL CENTER (FULL) -->
+    <div id="page-detail-control" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <button onclick="showPage('home')" class="mb-16 text-sm font-bold flex items-center hover:text-blue-500 transition text-[var(--text)] uppercase tracking-widest text-[var(--text)]">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            BACK TO ALL WORK
+        </button>
+        
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-20">
+                <h1 class="text-6xl md:text-8xl font-bold mb-6 text-[var(--text)] tracking-tighter text-[var(--text)]">Smart Ops Control Center</h1>
+                <p class="text-3xl text-[var(--text-muted)] max-w-4xl leading-relaxed italic font-light text-[var(--text-muted)]">"The screen was manageable; the environment was the bottleneck."</p>
+            </div>
+
+            <!-- Visual Lead -->
+            <div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">
+                <span class="text-sm font-mono opacity-40 uppercase tracking-[0.4em]">[ HERO_IMAGE: PHYSICAL_DIGITAL_WORKSPACE_TWIN ]</span>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-24 mt-20">
+                <div class="lg:col-span-2 space-y-24">
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 flex items-center text-[var(--text)] tracking-tight uppercase text-[var(--text)]">
+                            <span class="w-12 h-[2px] bg-blue-500 mr-6"></span>
+                            The Discovery
+                        </h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed mb-8 font-light text-[var(--text-muted)]">
+                            Management identifying "UI overload." After 3 full days of ethnographic shadowing across 24h cycles, I discovered that slow reaction times were actually caused by constant foot-traffic distractions and light glare.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 flex items-center text-[var(--text)] tracking-tight uppercase text-[var(--text)]">
+                            <span class="w-12 h-[2px] bg-blue-500 mr-6"></span>
+                            User Research & VR
+                        </h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed mb-10 font-light text-[var(--text-muted)]">
+                            Using VR prototyping, I simulated the entire control center redesign before a single desk was moved. This allowed pilots to validate sight-lines and reach-zones immersively.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="img-placeholder h-72 text-[var(--text-muted)]">[ VR_LAYOUT_DRAFTS ]</div>
+                            <div class="img-placeholder h-72 text-[var(--text-muted)]">[ ETHNOGRAPHIC_NOTES ]</div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 flex items-center text-[var(--text)] tracking-tight uppercase text-[var(--text)]">
+                            <span class="w-12 h-[2px] bg-blue-500 mr-6"></span>
+                            Design Execution
+                        </h3>
+                        <div class="img-placeholder h-[450px] mb-10 text-[var(--text-muted)]">[ FINAL_UI_ECOSYSTEM_IN_PI_VISION ]</div>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">
+                            Developed a context-aware UI library in **PI Vision by Aveva**. I introduced a tiered alert system and a "Self-Service Design Guide" empowering operators to scale their own focus.
+                        </p>
+                    </section>
+                </div>
+
+                <!-- Sidebar Content -->
+                <div class="space-y-10">
+                    <div class="glass-card p-10 rounded-[2.5rem] border-l-4 border-blue-500">
+                        <h4 class="text-xs uppercase font-bold text-blue-500 mb-2 font-mono tracking-widest">Reaction Speed</h4>
+                        <div class="text-5xl font-bold text-[var(--text)] tracking-tight text-[var(--text)]">2 Hours</div>
+                        <p class="text-xs text-[var(--text-muted)] mt-2 font-mono uppercase text-[var(--text-muted)]">Reduction from 1 week.</p>
+                    </div>
+                    
+                    <div class="glass-card p-10 rounded-[2.5rem] border-l-4 border-blue-500">
+                        <h4 class="text-xs uppercase font-bold text-blue-500 mb-2 font-mono tracking-widest">Business Impact</h4>
+                        <div class="text-5xl font-bold text-[var(--text)] tracking-tight text-[var(--text)]">-10%</div>
+                        <p class="text-xs text-[var(--text-muted)] mt-2 font-mono uppercase text-[var(--text-muted)]">Gas shortage reduction.</p>
+                    </div>
+
+                    <div class="pt-10">
+                        <h4 class="text-sm font-bold mb-6 uppercase text-[var(--text-muted)] tracking-[0.3em] font-mono text-[var(--text-muted)]">Architecture Tools</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="tag">VR (Oculus)</span>
+                            <span class="tag">PI Vision</span>
+                            <span class="tag">Figma</span>
+                            <span class="tag">3D (Spline)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Retrospective -->
+            <section class="mt-40 pt-24 border-t border-[var(--border)]">
+                <h3 class="text-5xl font-bold mb-10 italic text-[var(--text)] tracking-tight text-[var(--text)]">Lead's Retrospective</h3>
+                <p class="text-2xl text-[var(--text-muted)] font-light leading-relaxed max-w-5xl text-[var(--text-muted)]">
+                    "This project proved that as a Lead, you must look outside the bezel. The 'UI problem' was actually a spatial and cultural problem. By empowering pilots with a guide and customized toolset, we ensured the solution survives beyond my presence."
+                </p>
+            </section>
+        </div>
+    </div>
+
+    <!-- DETAIL PAGE: DATA SUITE (FULL) -->
+    <div id="page-detail-data" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <button onclick="showPage('home')" class="mb-16 text-sm font-bold flex items-center hover:text-blue-500 transition text-[var(--text)] uppercase tracking-widest text-[var(--text)]">BACK</button>
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-6xl md:text-8xl font-bold mb-10 text-[var(--text)] tracking-tighter text-[var(--text)]">Group Data Suite</h1>
+            <div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">[ DATA_PORTAL_SYSTEM_VISUAL ]</div>
+            
+            <div class="grid lg:grid-cols-2 gap-24 text-[var(--text-muted)]">
+                <div class="space-y-16">
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 text-[var(--text)] tracking-tight uppercase text-[var(--text)]">The Trillion Point Problem</h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">Designing a marketplace for verified datasets and AI initiatives, optimizing worldwide factory maintenance and budgeting.</p>
+                    </section>
+                    <div class="img-placeholder h-96 text-[var(--text-muted)]">[ DATA_CATALOG_EXPLORER ]</div>
+                </div>
+                <div class="space-y-16">
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 text-[var(--text)] tracking-tight uppercase text-[var(--text)]">AI Agent Collaboration</h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">Developing guided UI patterns for anomaly detection, turning AI alerts into actionable machine interventions.</p>
+                    </section>
+                    <div class="img-placeholder h-96 text-[var(--text-muted)]">[ AI_AGENT_FLOW ]</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL PAGE: B2B (FULL) -->
+    <div id="page-detail-b2b" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <button onclick="showPage('home')" class="mb-16 text-sm font-bold flex items-center hover:text-blue-500 transition text-[var(--text)] uppercase tracking-widest text-[var(--text)]">BACK</button>
+        <div class="max-w-7xl mx-auto">
+            <h1 class="text-6xl md:text-8xl font-bold mb-10 text-[var(--text)] tracking-tighter text-[var(--text)]">Unified B2B Platform</h1>
+            <div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">[ B2B_PORTAL_ECOSYSTEM ]</div>
+            
+            <div class="grid lg:grid-cols-3 gap-24 mt-20">
+                <div class="lg:col-span-2 space-y-16 text-[var(--text-muted)]">
+                    <section>
+                        <h3 class="text-3xl font-bold mb-8 text-[var(--text)] tracking-tight uppercase text-[var(--text)]">Global Harmonization</h3>
+                        <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">Merging 50+ regional sites into a singular, high-conversion brand experience. Mapping the guest-to-customer conversion funnel.</p>
+                    </section>
+                    <div class="img-placeholder h-[450px] text-[var(--text-muted)]">[ GLOBAL_SYSTEM_SNAPSHOT ]</div>
+                </div>
+                <div class="space-y-10">
+                    <div class="glass-card p-10 rounded-[2.5rem] border-l-4 border-blue-500">
+                        <h4 class="text-xs uppercase font-bold text-blue-500 mb-2 font-mono tracking-widest">Capture Metric</h4>
+                        <div class="text-5xl font-bold text-[var(--text)] tracking-tight text-[var(--text)]">+12%</div>
+                        <p class="text-xs text-[var(--text-muted)] mt-2 font-mono uppercase text-[var(--text-muted)]">Increase in customer retention.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAIL PAGE: ALTO (FULL) -->
+    <div id="page-detail-alto" class="page-view px-6 md:px-24 pt-32 pb-24">
+        <button onclick="showPage('home')" class="mb-16 text-sm font-bold flex items-center hover:text-blue-500 transition text-[var(--text)] uppercase tracking-widest text-[var(--text)]">BACK</button>
+        <div class="max-w-7xl mx-auto text-[var(--text-muted)]">
+            <h1 class="text-6xl md:text-8xl font-bold mb-10 text-[var(--text)] tracking-tighter text-[var(--text)]">Project Alto</h1>
+            <div class="img-placeholder h-[500px] mb-20 text-[var(--text-muted)]">[ ALTO_MAP_ARCHITECTURE ]</div>
+            
+            <div class="space-y-16 max-w-5xl">
+                <section>
+                    <h3 class="text-3xl font-bold mb-8 text-[var(--text)] tracking-tight uppercase text-[var(--text)]">Legacy Layering</h3>
+                    <p class="text-xl text-[var(--text-muted)] leading-relaxed font-light text-[var(--text-muted)]">Modernizing a foundation built in C. I designed a real-time monitoring layer for global gas logistics without breaking mission-critical technical backend logic.</p>
+                </section>
+                <div class="glass-card p-12 rounded-[2.5rem] border-l-4 border-blue-500">
+                    <h4 class="text-white font-bold mb-6 uppercase text-xs tracking-[0.4em] font-mono">Lead Principle</h4>
+                    <p class="text-xl text-[var(--text-muted)] leading-relaxed italic font-light text-[var(--text-muted)]">"Legacy code is history, not a prison. My goal is to build a translation layer between technical architecture and human behavior."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Theme Logic ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const body = document.body;
+
+        function setTheme(isLight) {
+            if (isLight) {
+                body.classList.add('light-mode');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                body.classList.remove('light-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+            try { localStorage.setItem('theme', isLight ? 'light' : 'dark'); } catch (e) {}
+            // Update particles color on theme change
+            if (window.particleSystem) window.particleSystem.updateColors(isLight);
+        }
+
+        function initTheme() {
+            let savedTheme = null;
+            try { savedTheme = localStorage.getItem('theme'); } catch (e) {}
+            const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+            if (savedTheme === 'light' || (!savedTheme && systemPrefersLight)) setTheme(true);
+            else setTheme(false);
+        }
+
+        themeToggle.addEventListener('click', () => setTheme(!body.classList.contains('light-mode')));
+        initTheme();
+
+        // --- Navigation Logic ---
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // --- Subtle Particle Background Logic ---
+        (function() {
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let mouse = { x: null, y: null };
+            let particleColor = 'rgba(0, 118, 255, 0.4)';
+
+            class Particle {
+                constructor() {
+                    this.init();
+                }
+                init() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = Math.random() * 0.4 - 0.2;
+                    this.speedY = Math.random() * 0.4 - 0.2;
+                    this.baseX = this.x;
+                    this.baseY = this.y;
+                    this.density = (Math.random() * 30) + 1;
+                }
+                update() {
+                    // Constant slow drift
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+
+                    // Mouse interaction
+                    if (mouse.x != null) {
+                        let dx = mouse.x - this.x;
+                        let dy = mouse.y - this.y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+                        if (distance > 0) {
+                            let forceDirectionX = dx / distance;
+                            let forceDirectionY = dy / distance;
+                            let maxDistance = 150;
+                            let force = (maxDistance - distance) / maxDistance;
+                            let directionX = forceDirectionX * force * this.density;
+                            let directionY = forceDirectionY * force * this.density;
+
+                            if (distance < maxDistance) {
+                                this.x += directionX * 0.05;
+                                this.y += directionY * 0.05;
+                            }
+                        }
+                    }
+
+                    // Loop particles around screen
+                    if (this.x > canvas.width) this.x = 0;
+                    else if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    else if (this.y < 0) this.y = canvas.height;
+                }
+                draw() {
+                    ctx.fillStyle = particleColor;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            function init() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                particles = [];
+                let numberOfParticles = (canvas.width * canvas.height) / 12000;
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                requestAnimationFrame(animate);
+            }
+
+            window.particleSystem = {
+                updateColors: (isLight) => {
+                    particleColor = isLight ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 118, 255, 0.4)';
+                }
+            };
+
+            window.addEventListener('resize', init);
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            init();
+            window.particleSystem.updateColors(body.classList.contains('light-mode'));
+            animate();
+        })();
+    </script>
+</body>
+</html>
