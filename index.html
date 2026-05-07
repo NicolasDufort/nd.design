@@ -158,8 +158,18 @@
             transform: scale(1.05);
         }
 
-        .section-3D{
-            background-color: red;
+        model-viewer {
+            width: 100%;       /* Prend toute la largeur disponible */
+            height: 600px;     /* Ajustez la hauteur selon votre préférence */
+            background-color: #f0f0f0; /* Couleur de fond optionnelle */
+            display: block;
+        }
+
+        /* Optionnel : Responsivité pour mobile */
+        @media (max-width: 768px) {
+            model-viewer {
+                height: 400px;
+            }
         }
     </style>
 </head>
